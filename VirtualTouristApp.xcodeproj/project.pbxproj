@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		9135DE041D77C5C40094DAC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE031D77C5C40094DAC5 /* AppDelegate.swift */; };
-		9135DE061D77C5C40094DAC5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE051D77C5C40094DAC5 /* ViewController.swift */; };
+		9135DE061D77C5C40094DAC5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE051D77C5C40094DAC5 /* MapViewController.swift */; };
 		9135DE091D77C5C40094DAC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE071D77C5C40094DAC5 /* Main.storyboard */; };
 		9135DE0B1D77C5C40094DAC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */; };
 		9135DE0E1D77C5C40094DAC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE0C1D77C5C40094DAC5 /* LaunchScreen.storyboard */; };
+		9135DE161D7817B40094DAC5 /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE151D7817B40094DAC5 /* AlbumViewController.swift */; };
+		91DD3AC01D78BC6000BA45CE /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9135DE001D77C5C40094DAC5 /* VirtualTouristApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTouristApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9135DE031D77C5C40094DAC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9135DE051D77C5C40094DAC5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9135DE051D77C5C40094DAC5 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		9135DE081D77C5C40094DAC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9135DE0D1D77C5C40094DAC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9135DE0F1D77C5C40094DAC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9135DE151D7817B40094DAC5 /* AlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
+		91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +59,13 @@
 			isa = PBXGroup;
 			children = (
 				9135DE031D77C5C40094DAC5 /* AppDelegate.swift */,
-				9135DE051D77C5C40094DAC5 /* ViewController.swift */,
+				9135DE051D77C5C40094DAC5 /* MapViewController.swift */,
+				9135DE151D7817B40094DAC5 /* AlbumViewController.swift */,
 				9135DE071D77C5C40094DAC5 /* Main.storyboard */,
 				9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */,
 				9135DE0C1D77C5C40094DAC5 /* LaunchScreen.storyboard */,
 				9135DE0F1D77C5C40094DAC5 /* Info.plist */,
+				91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */,
 			);
 			path = VirtualTouristApp;
 			sourceTree = "<group>";
@@ -135,7 +141,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9135DE061D77C5C40094DAC5 /* ViewController.swift in Sources */,
+				9135DE161D7817B40094DAC5 /* AlbumViewController.swift in Sources */,
+				91DD3AC01D78BC6000BA45CE /* PhotoCollectionViewCell.swift in Sources */,
+				9135DE061D77C5C40094DAC5 /* MapViewController.swift in Sources */,
 				9135DE041D77C5C40094DAC5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +294,7 @@
 				9135DE141D77C5C40094DAC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
