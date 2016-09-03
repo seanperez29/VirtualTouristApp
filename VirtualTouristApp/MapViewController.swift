@@ -17,15 +17,15 @@ class MapViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadMapViewRegion()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .Plain, target: nil, action: nil)
-        
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.addAnnotation(_:)))
         longPressRecogniser.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(longPressRecogniser)
     }
     
     override func viewDidLayoutSubviews() {
-        deletePinsView.center.y += 100
+        deletePinsView.center.y += deletePinsView.frame.height
     }
     
     @IBAction func editButtonPressed(sender: UIBarButtonItem) {
@@ -34,13 +34,13 @@ class MapViewController: UIViewController {
             sender.title = "Done"
             UIView.animateWithDuration(0.25, animations: {
                 self.mapView.frame.origin.y -= self.deletePinsView.frame.height
-                self.deletePinsView.center.y -= 100
+                self.deletePinsView.center.y -= self.deletePinsView.frame.height
             })
         } else {
             sender.title = "Edit"
             UIView.animateWithDuration(0.25, animations: {
                 self.mapView.frame.origin.y += self.deletePinsView.frame.height
-                self.deletePinsView.center.y += 100
+                self.deletePinsView.center.y += self.deletePinsView.frame.height
             })
         }
     }
@@ -55,6 +55,24 @@ class MapViewController: UIViewController {
             newAnnotation.coordinate = newCoord
             mapView.addAnnotation(newAnnotation)
         }
+    }
+    
+    func saveMapViewRegion() {
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.latitude, forKey: "Latitude")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.longitude, forKey: "Longitude")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.latitudeDelta, forKey: "LatitudeDelta")
+        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.longitudeDelta, forKey: "LongitudeDelta")
+    }
+    
+    func loadMapViewRegion() {
+        let latitude = NSUserDefaults.standardUserDefaults().doubleForKey("Latitude")
+        let longitude = NSUserDefaults.standardUserDefaults().doubleForKey("Longitude")
+        let latitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LatitudeDelta")
+        let longitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LongitudeDelta")
+        let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+        let region = MKCoordinateRegion(center: center, span: span)
+        mapView.setRegion(region, animated: false)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -74,6 +92,9 @@ extension MapViewController: MKMapViewDelegate {
             let annotation = view.annotation
             performSegueWithIdentifier("ShowAlbum", sender: annotation)
         }
+    }
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        saveMapViewRegion()
     }
 }
 
