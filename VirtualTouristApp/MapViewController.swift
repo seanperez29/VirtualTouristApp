@@ -8,15 +8,20 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var deletePinsView: UIView!
+    var managedObjectContext: NSManagedObjectContext!
     var isEdit = false
+    var pins = [Pin]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchPins()
+        placePinsOnMap()
         loadMapViewRegion()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .Plain, target: nil, action: nil)
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.addAnnotation(_:)))
@@ -53,7 +58,18 @@ class MapViewController: UIViewController {
             let newCoord: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
             let newAnnotation = MKPointAnnotation()
             newAnnotation.coordinate = newCoord
+            createNewPinObject(newAnnotation)
             mapView.addAnnotation(newAnnotation)
+        }
+    }
+    
+    func createNewPinObject(annotation: MKPointAnnotation) {
+        let pin = Pin(annotation: annotation, context: managedObjectContext)
+        pins.append(pin)
+        do {
+            try managedObjectContext.save()
+        } catch {
+            fatalError("Error: \(error)")
         }
     }
     
@@ -75,11 +91,43 @@ class MapViewController: UIViewController {
         mapView.setRegion(region, animated: false)
     }
     
+    func fetchPins() {
+        let fetchRequest = NSFetchRequest()
+        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: managedObjectContext)
+        fetchRequest.entity = entity
+        do {
+            let foundObjects = try managedObjectContext.executeFetchRequest(fetchRequest)
+            pins = foundObjects as! [Pin]
+        } catch {
+            fatalError("Could not fetch pins")
+        }
+    }
+    
+    func placePinsOnMap() {
+        for pin in pins {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = pin.coordinate
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    func obtainPin(annotation: MKAnnotation) -> Pin {
+        var location: Pin!
+        for pin in pins {
+            if (annotation.coordinate.latitude == pin.coordinate.latitude && annotation.coordinate.longitude == pin.coordinate.longitude) {
+                location = pin
+            }
+        }
+        return location
+    }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ShowAlbum" {
             let albumViewController = segue.destinationViewController as! AlbumViewController
             let currentAnnotation = sender as! MKPointAnnotation
             albumViewController.currentAnnotation = currentAnnotation
+            albumViewController.managedObjectContext = managedObjectContext
+            albumViewController.pin = obtainPin(currentAnnotation)
         }
     }
 }
@@ -88,8 +136,15 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         if let annotation = view.annotation where isEdit {
             self.mapView.removeAnnotation(annotation)
+            managedObjectContext.deleteObject(obtainPin(annotation))
+            do {
+                try managedObjectContext.save()
+            } catch {
+                fatalError("Error: \(error)")
+            }
         } else {
             let annotation = view.annotation
+            mapView.deselectAnnotation(annotation, animated: false)
             performSegueWithIdentifier("ShowAlbum", sender: annotation)
         }
     }

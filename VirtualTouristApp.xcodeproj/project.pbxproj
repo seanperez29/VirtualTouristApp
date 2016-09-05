@@ -14,6 +14,11 @@
 		9135DE0E1D77C5C40094DAC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE0C1D77C5C40094DAC5 /* LaunchScreen.storyboard */; };
 		9135DE161D7817B40094DAC5 /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE151D7817B40094DAC5 /* AlbumViewController.swift */; };
 		91DD3AC01D78BC6000BA45CE /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */; };
+		91FF7EE41D7CFBCF008A273B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 91FF7EE21D7CFBCF008A273B /* Model.xcdatamodeld */; };
+		91FF7EF11D7CFFF6008A273B /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF7EED1D7CFFF6008A273B /* Pin+CoreDataProperties.swift */; };
+		91FF7EF21D7CFFF6008A273B /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF7EEE1D7CFFF6008A273B /* Pin.swift */; };
+		91FF7EF31D7CFFF6008A273B /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF7EEF1D7CFFF6008A273B /* Photo+CoreDataProperties.swift */; };
+		91FF7EF41D7CFFF6008A273B /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FF7EF01D7CFFF6008A273B /* Photo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +31,11 @@
 		9135DE0F1D77C5C40094DAC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9135DE151D7817B40094DAC5 /* AlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumViewController.swift; sourceTree = "<group>"; };
 		91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		91FF7EE31D7CFBCF008A273B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		91FF7EED1D7CFFF6008A273B /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		91FF7EEE1D7CFFF6008A273B /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
+		91FF7EEF1D7CFFF6008A273B /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		91FF7EF01D7CFFF6008A273B /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +52,10 @@
 		9135DDF71D77C5C40094DAC5 = {
 			isa = PBXGroup;
 			children = (
+				91FF7EED1D7CFFF6008A273B /* Pin+CoreDataProperties.swift */,
+				91FF7EEE1D7CFFF6008A273B /* Pin.swift */,
+				91FF7EEF1D7CFFF6008A273B /* Photo+CoreDataProperties.swift */,
+				91FF7EF01D7CFFF6008A273B /* Photo.swift */,
 				9135DE021D77C5C40094DAC5 /* VirtualTouristApp */,
 				9135DE011D77C5C40094DAC5 /* Products */,
 			);
@@ -66,6 +80,7 @@
 				9135DE0C1D77C5C40094DAC5 /* LaunchScreen.storyboard */,
 				9135DE0F1D77C5C40094DAC5 /* Info.plist */,
 				91DD3ABF1D78BC6000BA45CE /* PhotoCollectionViewCell.swift */,
+				91FF7EE21D7CFBCF008A273B /* Model.xcdatamodeld */,
 			);
 			path = VirtualTouristApp;
 			sourceTree = "<group>";
@@ -141,9 +156,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91FF7EF21D7CFFF6008A273B /* Pin.swift in Sources */,
 				9135DE161D7817B40094DAC5 /* AlbumViewController.swift in Sources */,
+				91FF7EF11D7CFFF6008A273B /* Pin+CoreDataProperties.swift in Sources */,
+				91FF7EF41D7CFFF6008A273B /* Photo.swift in Sources */,
 				91DD3AC01D78BC6000BA45CE /* PhotoCollectionViewCell.swift in Sources */,
+				91FF7EE41D7CFBCF008A273B /* Model.xcdatamodeld in Sources */,
 				9135DE061D77C5C40094DAC5 /* MapViewController.swift in Sources */,
+				91FF7EF31D7CFFF6008A273B /* Photo+CoreDataProperties.swift in Sources */,
 				9135DE041D77C5C40094DAC5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,6 +317,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		91FF7EE21D7CFBCF008A273B /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				91FF7EE31D7CFBCF008A273B /* Model.xcdatamodel */,
+			);
+			currentVersion = 91FF7EE31D7CFBCF008A273B /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 9135DDF81D77C5C40094DAC5 /* Project object */;
 }
