@@ -23,6 +23,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setMapViewAnnotationAndRegion(currentAnnotation.coordinate)
+        loadPhotos(pin)
     }
     
     @IBAction func newCollectionButtonPressed() {
@@ -39,6 +40,27 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
         mapView.setRegion(region, animated: false)
         mapView.addAnnotation(currentAnnotation)
     }
+    
+    func loadPhotos(pin: Pin) {
+        FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, error) in
+            if (error != nil) {
+                print("There was an error")
+            } else {
+                dispatch_async(dispatch_get_main_queue()) {
+                    let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
+                    for photo in photos {
+                        photo.pin = self.pin
+                    }
+                    do {
+                        try self.managedObjectContext.save()
+                    } catch {
+                        fatalError("Error: \(error)")
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
