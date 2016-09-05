@@ -137,7 +137,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="rbv-ko-sfe">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rbv-ko-sfe">
                                 <rect key="frame" x="0.0" y="64" width="600" height="132"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="132" id="MuF-dB-eS8"/>
@@ -146,8 +146,27 @@
                                     <outlet property="delegate" destination="9ju-T1-BM5" id="p1Y-66-MYL"/>
                                 </connections>
                             </mapView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iaP-rm-PmM">
+                                <rect key="frame" x="0.0" y="550" width="600" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PuK-oL-PRX">
+                                        <rect key="frame" x="239" y="8" width="122" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="New Collection"/>
+                                        <connections>
+                                            <action selector="newCollectionButtonPressed" destination="9ju-T1-BM5" eventType="touchUpInside" id="hNa-IL-osp"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.95592948717948723" green="0.95592948717948723" blue="0.95592948717948723" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="PuK-oL-PRX" firstAttribute="centerY" secondItem="iaP-rm-PmM" secondAttribute="centerY" id="1pC-dH-0TC"/>
+                                    <constraint firstAttribute="height" constant="50" id="QLA-xK-H0v"/>
+                                    <constraint firstItem="PuK-oL-PRX" firstAttribute="centerX" secondItem="iaP-rm-PmM" secondAttribute="centerX" id="lN2-pa-Aap"/>
+                                </constraints>
+                            </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cwa-WI-ycB">
-                                <rect key="frame" x="0.0" y="196" width="600" height="404"/>
+                                <rect key="frame" x="0.0" y="196" width="600" height="354"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="UoA-HH-hin">
                                     <size key="itemSize" width="130" height="130"/>
@@ -199,30 +218,12 @@
                                     <outlet property="delegate" destination="9ju-T1-BM5" id="h8Z-Fv-idw"/>
                                 </connections>
                             </collectionView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iaP-rm-PmM">
-                                <rect key="frame" x="0.0" y="550" width="600" height="50"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PuK-oL-PRX">
-                                        <rect key="frame" x="239" y="8" width="122" height="34"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <state key="normal" title="New Collection"/>
-                                        <connections>
-                                            <action selector="newCollectionButtonPressed" destination="9ju-T1-BM5" eventType="touchUpInside" id="hNa-IL-osp"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="0.95592948717948723" green="0.95592948717948723" blue="0.95592948717948723" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstItem="PuK-oL-PRX" firstAttribute="centerY" secondItem="iaP-rm-PmM" secondAttribute="centerY" id="1pC-dH-0TC"/>
-                                    <constraint firstAttribute="height" constant="50" id="QLA-xK-H0v"/>
-                                    <constraint firstItem="PuK-oL-PRX" firstAttribute="centerX" secondItem="iaP-rm-PmM" secondAttribute="centerX" id="lN2-pa-Aap"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="rbv-ko-sfe" secondAttribute="trailing" id="4tT-y6-Nvc"/>
                             <constraint firstItem="rbv-ko-sfe" firstAttribute="top" secondItem="PV3-HV-wLJ" secondAttribute="bottom" id="DP3-nk-QoX"/>
+                            <constraint firstItem="iaP-rm-PmM" firstAttribute="top" secondItem="cwa-WI-ycB" secondAttribute="bottom" id="Fos-G1-B8u"/>
                             <constraint firstItem="dbH-0z-XtC" firstAttribute="top" secondItem="cwa-WI-ycB" secondAttribute="bottom" id="HhC-lT-EGw"/>
                             <constraint firstAttribute="trailing" secondItem="cwa-WI-ycB" secondAttribute="trailing" id="Tql-FI-Dg6"/>
                             <constraint firstItem="dbH-0z-XtC" firstAttribute="top" secondItem="iaP-rm-PmM" secondAttribute="bottom" id="abO-lS-nTh"/>
@@ -232,6 +233,11 @@
                             <constraint firstItem="cwa-WI-ycB" firstAttribute="leading" secondItem="Shy-jy-WqL" secondAttribute="leading" id="lzk-Iz-ccn"/>
                             <constraint firstAttribute="trailing" secondItem="iaP-rm-PmM" secondAttribute="trailing" id="nwI-pV-Dwr"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="HhC-lT-EGw"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="cwa-WI-ycB" id="B2J-K6-Tps"/>

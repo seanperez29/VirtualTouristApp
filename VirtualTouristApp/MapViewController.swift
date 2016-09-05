@@ -116,6 +116,7 @@ class MapViewController: UIViewController {
         for pin in pins {
             if (annotation.coordinate.latitude == pin.coordinate.latitude && annotation.coordinate.longitude == pin.coordinate.longitude) {
                 location = pin
+                break
             }
         }
         return location
