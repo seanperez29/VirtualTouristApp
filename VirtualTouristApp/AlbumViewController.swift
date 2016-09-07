@@ -66,22 +66,32 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     }
     
     func loadPhotos(pin: Pin) {
-        FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, error) in
-            if (error != nil) {
-                print("There was an error")
-            } else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
-                    for photo in photos {
-                        photo.pin = self.pin
-                    }
-                    do {
-                        try self.managedObjectContext.save()
-                    } catch {
-                        fatalError("Error: \(error)")
+        if pin.photo.isEmpty {
+            FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, error) in
+                if (error != nil) {
+                    print("There was an error")
+                } else {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
+                        for photo in photos {
+                            photo.pin = self.pin
+                        }
+                        do {
+                            try self.managedObjectContext.save()
+                        } catch {
+                            fatalError("Error: \(error)")
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    func updateNewCollectionButton(sender: UIButton) {
+        if selectedIndexes.count > 0 {
+            newCollectionButton.setTitle("Remove Selected Photos", forState: .Normal)
+        } else {
+            newCollectionButton.setTitle("New Collection", forState: .Normal)
         }
     }
     
@@ -101,6 +111,17 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         cell.configureCell(photo)
         return cell
+    }
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCollectionViewCell
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        if let index = selectedIndexes.indexOf(indexPath) {
+            selectedIndexes.removeAtIndex(index)
+        } else {
+            selectedIndexes.append(indexPath)
+        }
+        cell.configureCell(photo)
+        
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
