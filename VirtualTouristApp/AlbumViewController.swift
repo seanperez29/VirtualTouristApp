@@ -19,11 +19,35 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     var managedObjectContext: NSManagedObjectContext!
     var pin: Pin!
     var isEdit = false
+    var selectedIndexes = [NSIndexPath]()
+    var insertedIndexPaths: [NSIndexPath]!
+    var deletedIndexPaths: [NSIndexPath]!
+    var updatedIndexPaths: [NSIndexPath]!
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest()
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: self.managedObjectContext)
+        fetchRequest.entity = entity
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        return fetchedResultsController
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setMapViewAnnotationAndRegion(currentAnnotation.coordinate)
         loadPhotos(pin)
+        performFetch()
+    }
+    
+    func performFetch() {
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Could not fetch photos")
+        }
     }
     
     @IBAction func newCollectionButtonPressed() {
@@ -61,15 +85,21 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    deinit {
+        fetchedResultsController.delegate = nil
+    }
+    
 }
 
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 21
+        let sectionInfo = fetchedResultsController.sections![section]
+        return sectionInfo.numberOfObjects
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCollectionViewCell
-        cell.imageView.image = UIImage(named: "Placeholder")
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        cell.configureCell(photo)
         return cell
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
@@ -85,3 +115,58 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
         return CGSize(width: collectionView.bounds.size.width/3, height: collectionView.bounds.size.width/3)
     }
 }
+
+extension AlbumViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        
+        switch type {
+        case .Insert:
+            insertedIndexPaths.append(newIndexPath!)
+            break
+        case .Delete:
+            deletedIndexPaths.append(indexPath!)
+            break
+        case .Update:
+            updatedIndexPaths.append(indexPath!)
+            break
+        case .Move:
+            print("Move an item. We don't expect to see this in this app.")
+            break
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.collectionView.performBatchUpdates(
+                {
+                    () -> Void in
+                    for indexPath in self.insertedIndexPaths {
+                        self.collectionView.insertItemsAtIndexPaths([indexPath])
+                    }
+                    for indexPath in self.deletedIndexPaths {
+                        self.collectionView.deleteItemsAtIndexPaths([indexPath])
+                    }
+                    for indexPath in self.updatedIndexPaths {
+                        self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                    }
+                }
+                ,completion: nil)
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+

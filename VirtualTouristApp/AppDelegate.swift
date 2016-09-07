@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
         let documentsDirectory = urls[0]
         let storeURL = documentsDirectory.URLByAppendingPathComponent("DataStore.sqlite")
+        print(storeURL)
         do {
             let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
             try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
@@ -40,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationController = window!.rootViewController as! UINavigationController
         let mapViewController = navigationController.topViewController as! MapViewController
         mapViewController.managedObjectContext = managedObjectContext
+        let _ = mapViewController.view
         return true
     }
 
