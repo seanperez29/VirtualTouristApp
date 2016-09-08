@@ -51,10 +51,40 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func newCollectionButtonPressed() {
-        if isEdit {
-            newCollectionButton.setTitle("Remove Selected Pictures", forState: .Normal)
+        if selectedIndexes.count > 0 {
+            deleteSelectedItems()
+            updateNewCollectionButton()
         } else {
-            newCollectionButton.setTitle("New Collection", forState: .Normal)
+            deleteAllPhotos()
+            loadPhotos(pin)
+            updateNewCollectionButton()
+        }
+    }
+    
+    func deleteSelectedItems() {
+        var photosToDelete = [Photo]()
+        for indexPath in selectedIndexes {
+            photosToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
+        }
+        for photo in photosToDelete {
+            managedObjectContext.deleteObject(photo)
+        }
+        do {
+            try self.managedObjectContext.save()
+        } catch {
+            fatalError("Error: \(error)")
+        }
+        selectedIndexes = [NSIndexPath]()
+    }
+    
+    func deleteAllPhotos() {
+        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            managedObjectContext.deleteObject(photo)
+        }
+        do {
+            try self.managedObjectContext.save()
+        } catch {
+            fatalError("Error: \(error)")
         }
     }
     
@@ -87,7 +117,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func updateNewCollectionButton(sender: UIButton) {
+    func updateNewCollectionButton() {
         if selectedIndexes.count > 0 {
             newCollectionButton.setTitle("Remove Selected Photos", forState: .Normal)
         } else {
@@ -109,6 +139,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCollectionViewCell
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        cell.imageView.alpha = 1
         cell.configureCell(photo)
         return cell
     }
@@ -117,10 +148,13 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
         let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         if let index = selectedIndexes.indexOf(indexPath) {
             selectedIndexes.removeAtIndex(index)
+            cell.imageView.alpha = 1
         } else {
             selectedIndexes.append(indexPath)
+            cell.imageView.alpha = 0.5
         }
         cell.configureCell(photo)
+        updateNewCollectionButton()
         
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {

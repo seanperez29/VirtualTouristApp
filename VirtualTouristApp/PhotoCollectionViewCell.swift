@@ -18,6 +18,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             imageView.hidden = false
             imageView.image = photo.photoImage
         } else {
+            activityIndicator.hidden = false
             activityIndicator.startAnimating()
             imageView.image = UIImage(named: "Placeholder")
             FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, error) in
@@ -36,8 +37,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                 }
             })
         }
-        
     }
-    
 
 }
