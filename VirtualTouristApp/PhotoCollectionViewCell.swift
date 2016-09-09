@@ -16,6 +16,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     func configureCell(photo: Photo) {
         if photo.photoImage != nil {
             imageView.hidden = false
+            activityIndicator.hidden = true
             imageView.image = photo.photoImage
         } else {
             activityIndicator.hidden = false
