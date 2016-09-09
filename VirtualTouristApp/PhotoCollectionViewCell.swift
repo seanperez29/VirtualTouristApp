@@ -21,22 +21,21 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
             imageView.image = UIImage(named: "Placeholder")
-            FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, error) in
-                if error != nil {
-                    print("Error downloading image: \(error)")
-                } else {
-                    if let image = UIImage(data: imageData!) {
-                        dispatch_async(dispatch_get_main_queue(), { 
-                            self.imageView.hidden = false
-                            self.imageView.image = image
-                            self.activityIndicator.stopAnimating()
-                            self.activityIndicator.hidden = true
-                            photo.photoImage = image
-                        })
-                    }
+            FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, errorString) in
+                guard (errorString == nil) else {
+                    print("Error downloading image: \(errorString)")
+                    return
+                }
+                if let image = UIImage(data: imageData!) {
+                    performUIUpdatesOnMain({ 
+                        self.imageView.hidden = false
+                        self.imageView.image = image
+                        self.activityIndicator.stopAnimating()
+                        self.activityIndicator.hidden = true
+                        photo.photoImage = image
+                    })
                 }
             })
         }
     }
-
 }

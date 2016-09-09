@@ -97,26 +97,26 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     
     func loadPhotos(pin: Pin) {
         if pin.photo.isEmpty {
-            FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, error) in
-                if (error != nil) {
-                    print("There was an error")
-                } else {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
-                        for photo in photos {
-                            photo.pin = self.pin
-                        }
-                        do {
-                            try self.managedObjectContext.save()
-                        } catch {
-                            fatalError("Error: \(error)")
-                        }
-                    }
+            FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, errorString) in
+                guard (errorString == nil) else {
+                    print("There was an error: \(errorString)")
+                    return
                 }
+                performUIUpdatesOnMain({ 
+                    let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
+                    for photo in photos {
+                        photo.pin = self.pin
+                    }
+                    do {
+                        try self.managedObjectContext.save()
+                    } catch {
+                        fatalError("Error: \(error)")
+                    }
+                })
             }
         }
     }
-    
+
     func updateNewCollectionButton() {
         if selectedIndexes.count > 0 {
             newCollectionButton.setTitle("Remove Selected Photos", forState: .Normal)

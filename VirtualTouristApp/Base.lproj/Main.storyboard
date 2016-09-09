@@ -182,8 +182,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MP0-gR-ZJJ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MP0-gR-ZJJ">
+                                                    <rect key="frame" x="2" y="2" width="126" height="126"/>
                                                 </imageView>
                                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="wos-eC-pry">
                                                     <rect key="frame" x="55" y="55" width="20" height="20"/>
@@ -193,13 +193,13 @@
                                         </view>
                                         <constraints>
                                             <constraint firstItem="MP0-gR-ZJJ" firstAttribute="centerY" secondItem="Cy4-tP-Xys" secondAttribute="centerY" id="FSw-kE-Pkl"/>
-                                            <constraint firstAttribute="bottom" secondItem="MP0-gR-ZJJ" secondAttribute="bottom" id="JXR-VH-pBo"/>
-                                            <constraint firstItem="MP0-gR-ZJJ" firstAttribute="top" secondItem="Cy4-tP-Xys" secondAttribute="top" id="Wmm-La-kP4"/>
-                                            <constraint firstAttribute="trailing" secondItem="MP0-gR-ZJJ" secondAttribute="trailing" id="cCx-9a-uey"/>
+                                            <constraint firstAttribute="bottom" secondItem="MP0-gR-ZJJ" secondAttribute="bottom" constant="2" id="JXR-VH-pBo"/>
+                                            <constraint firstItem="MP0-gR-ZJJ" firstAttribute="top" secondItem="Cy4-tP-Xys" secondAttribute="top" constant="2" id="Wmm-La-kP4"/>
+                                            <constraint firstAttribute="trailing" secondItem="MP0-gR-ZJJ" secondAttribute="trailing" constant="2" id="cCx-9a-uey"/>
                                             <constraint firstItem="wos-eC-pry" firstAttribute="centerX" secondItem="Cy4-tP-Xys" secondAttribute="centerX" id="eAz-JT-AEL"/>
                                             <constraint firstItem="wos-eC-pry" firstAttribute="centerY" secondItem="Cy4-tP-Xys" secondAttribute="centerY" id="gvl-Ah-Yge"/>
                                             <constraint firstItem="MP0-gR-ZJJ" firstAttribute="centerX" secondItem="Cy4-tP-Xys" secondAttribute="centerX" id="psj-Fj-89q"/>
-                                            <constraint firstItem="MP0-gR-ZJJ" firstAttribute="leading" secondItem="Cy4-tP-Xys" secondAttribute="leading" id="ui5-xW-Hsk"/>
+                                            <constraint firstItem="MP0-gR-ZJJ" firstAttribute="leading" secondItem="Cy4-tP-Xys" secondAttribute="leading" constant="2" id="ui5-xW-Hsk"/>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
