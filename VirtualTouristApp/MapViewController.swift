@@ -14,7 +14,6 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var deletePinsView: UIView!
-    //var managedObjectContext: NSManagedObjectContext!
     var isEdit = false
     var pins = [Pin]()
     

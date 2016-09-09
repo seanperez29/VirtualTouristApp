@@ -16,9 +16,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var newCollectionButton: UIButton!
     var currentAnnotation: MKPointAnnotation!
-    //var managedObjectContext: NSManagedObjectContext!
     var pin: Pin!
-    var isEdit = false
     var selectedIndexes = [NSIndexPath]()
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
