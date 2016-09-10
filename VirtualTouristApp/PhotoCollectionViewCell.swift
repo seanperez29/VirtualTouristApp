@@ -19,9 +19,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             activityIndicator.hidden = true
             imageView.image = photo.photoImage
         } else {
+            imageView.image = UIImage(named: "Placeholder")
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
-            imageView.image = UIImage(named: "Placeholder")
             FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, errorString) in
                 guard (errorString == nil) else {
                     print("Error downloading image: \(errorString)")

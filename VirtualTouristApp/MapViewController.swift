@@ -24,7 +24,7 @@ class MapViewController: UIViewController {
         loadMapViewRegion()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .Plain, target: nil, action: nil)
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.addAnnotation(_:)))
-        longPressRecogniser.minimumPressDuration = 1.0
+        longPressRecogniser.minimumPressDuration = 0.5
         mapView.addGestureRecognizer(longPressRecogniser)
     }
     
@@ -50,7 +50,7 @@ class MapViewController: UIViewController {
     }
     
     func addAnnotation(gestureRecognizer: UIGestureRecognizer) {
-        if gestureRecognizer.state != .Began {
+        if gestureRecognizer.state != .Began || isEdit {
             return
         } else {
             let touchPoint = gestureRecognizer.locationInView(mapView)
