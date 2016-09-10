@@ -39,6 +39,9 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
         setMapViewAnnotationAndRegion(currentAnnotation.coordinate)
         loadPhotos(pin)
         performFetch()
+        if pin.hasPhotos {
+            newCollectionButton.enabled = true
+        }
     }
     
     func performFetch() {
@@ -96,15 +99,9 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
                 performUIUpdatesOnMain({ 
                     if hasPhotos == false {
                         self.noImagesLabel.hidden = false
-                    } else {
-                        self.newCollectionButton.enabled = true
                     }
+                    self.newCollectionButton.enabled = true
                 })
-//                if hasPhotos == false {
-//                    performUIUpdatesOnMain({ 
-//                        self.noImagesLabel.hidden = false
-//                    })
-//                }
             }
         }
     }
