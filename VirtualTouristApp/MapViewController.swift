@@ -14,7 +14,6 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var deletePinsView: UIView!
-    var managedObjectContext: NSManagedObjectContext!
     var isEdit = false
     var pins = [Pin]()
     
@@ -64,13 +63,9 @@ class MapViewController: UIViewController {
     }
     
     func createNewPinObject(annotation: MKPointAnnotation) {
-        let pin = Pin(annotation: annotation, context: managedObjectContext)
+        let pin = Pin(annotation: annotation, context: CoreDataStack.sharedInstance().context)
         pins.append(pin)
-        do {
-            try managedObjectContext.save()
-        } catch {
-            fatalError("Error: \(error)")
-        }
+        CoreDataStack.sharedInstance().save()
     }
     
     func saveMapViewRegion() {
@@ -93,10 +88,10 @@ class MapViewController: UIViewController {
     
     func fetchPins() {
         let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: managedObjectContext)
+        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         do {
-            let foundObjects = try managedObjectContext.executeFetchRequest(fetchRequest)
+            let foundObjects = try CoreDataStack.sharedInstance().context.executeFetchRequest(fetchRequest)
             pins = foundObjects as! [Pin]
         } catch {
             fatalError("Could not fetch pins")
@@ -127,7 +122,6 @@ class MapViewController: UIViewController {
             let albumViewController = segue.destinationViewController as! AlbumViewController
             let currentAnnotation = sender as! MKPointAnnotation
             albumViewController.currentAnnotation = currentAnnotation
-            albumViewController.managedObjectContext = managedObjectContext
             albumViewController.pin = obtainPin(currentAnnotation)
         }
     }
@@ -137,12 +131,8 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         if let annotation = view.annotation where isEdit {
             self.mapView.removeAnnotation(annotation)
-            managedObjectContext.deleteObject(obtainPin(annotation))
-            do {
-                try managedObjectContext.save()
-            } catch {
-                fatalError("Error: \(error)")
-            }
+            CoreDataStack.sharedInstance().context.deleteObject(obtainPin(annotation))
+            CoreDataStack.sharedInstance().save()
         } else {
             let annotation = view.annotation
             mapView.deselectAnnotation(annotation, animated: false)

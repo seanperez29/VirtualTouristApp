@@ -16,21 +16,19 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var newCollectionButton: UIButton!
     var currentAnnotation: MKPointAnnotation!
-    var managedObjectContext: NSManagedObjectContext!
     var pin: Pin!
-    var isEdit = false
     var selectedIndexes = [NSIndexPath]()
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
     lazy var fetchedResultsController: NSFetchedResultsController = {
         let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: self.managedObjectContext)
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
         return fetchedResultsController
     }()
@@ -67,25 +65,17 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
             photosToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
         }
         for photo in photosToDelete {
-            managedObjectContext.deleteObject(photo)
+            CoreDataStack.sharedInstance().context.deleteObject(photo)
         }
-        do {
-            try self.managedObjectContext.save()
-        } catch {
-            fatalError("Error: \(error)")
-        }
+        CoreDataStack.sharedInstance().save()
         selectedIndexes = [NSIndexPath]()
     }
     
     func deleteAllPhotos() {
         for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-            managedObjectContext.deleteObject(photo)
+            CoreDataStack.sharedInstance().context.deleteObject(photo)
         }
-        do {
-            try self.managedObjectContext.save()
-        } catch {
-            fatalError("Error: \(error)")
-        }
+        CoreDataStack.sharedInstance().save()
     }
     
     func setMapViewAnnotationAndRegion(location: CLLocationCoordinate2D) {
@@ -103,15 +93,11 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
                     return
                 }
                 performUIUpdatesOnMain({ 
-                    let photos = Photo.photosFromResult(result!, context: self.managedObjectContext)
+                    let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
                     for photo in photos {
                         photo.pin = self.pin
                     }
-                    do {
-                        try self.managedObjectContext.save()
-                    } catch {
-                        fatalError("Error: \(error)")
-                    }
+                    CoreDataStack.sharedInstance().save()
                 })
             }
         }
