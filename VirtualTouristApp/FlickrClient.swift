@@ -11,12 +11,21 @@ import Foundation
 class FlickrClient: NSObject {
     static let sharedInstance = FlickrClient()
     
-    func loadPhotos(latitude: Double, longitude: Double, completionHandler: (result: AnyObject?, errorString: String?) -> Void) {
+    func loadPhotos(pin: Pin) -> Void {
         let methodParameters = [
-            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod, Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey, Constants.FlickrParameterKeys.BoundingBox: bboxString(latitude, pinLongitude: longitude), Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch, Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat, Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
+            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod, Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey, Constants.FlickrParameterKeys.BoundingBox: bboxString(pin.latitude, pinLongitude: pin.longitude), Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch, Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat, Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         taskForGetMethod(methodParameters) { (result, errorString) in
-            completionHandler(result: result, errorString: errorString)
+            guard (errorString == nil) else {
+                print("There was an error: \(errorString)")
+                return
+            }
+            let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
+            for photo in photos {
+                photo.pin = pin
+            }
+            pin.hasPhotos = true
+            CoreDataStack.sharedInstance().save()
         }
     }
     

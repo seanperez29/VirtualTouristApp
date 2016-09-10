@@ -54,7 +54,6 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
             updateNewCollectionButton()
         } else {
             deleteAllPhotos()
-            loadPhotos(pin)
             updateNewCollectionButton()
         }
     }
@@ -87,19 +86,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     
     func loadPhotos(pin: Pin) {
         if pin.photo.isEmpty {
-            FlickrClient.sharedInstance.loadPhotos(pin.latitude, longitude: pin.longitude) { (result, errorString) in
-                guard (errorString == nil) else {
-                    print("There was an error: \(errorString)")
-                    return
-                }
-                performUIUpdatesOnMain({ 
-                    let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
-                    for photo in photos {
-                        photo.pin = self.pin
-                    }
-                    CoreDataStack.sharedInstance().save()
-                })
-            }
+            FlickrClient.sharedInstance.loadPhotos(pin)
         }
     }
 
@@ -120,6 +107,9 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController.sections![section]
+        if (sectionInfo.numberOfObjects == 0) && pin.hasPhotos {
+            loadPhotos(pin)
+        }
         return sectionInfo.numberOfObjects
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -131,7 +121,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCollectionViewCell
-        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        //let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         if let index = selectedIndexes.indexOf(indexPath) {
             selectedIndexes.removeAtIndex(index)
             cell.imageView.alpha = 1
@@ -139,7 +129,6 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
             selectedIndexes.append(indexPath)
             cell.imageView.alpha = 0.5
         }
-        cell.configureCell(photo)
         updateNewCollectionButton()
         
     }

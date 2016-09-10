@@ -76,14 +76,27 @@ class MapViewController: UIViewController {
     }
     
     func loadMapViewRegion() {
-        let latitude = NSUserDefaults.standardUserDefaults().doubleForKey("Latitude")
-        let longitude = NSUserDefaults.standardUserDefaults().doubleForKey("Longitude")
-        let latitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LatitudeDelta")
-        let longitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LongitudeDelta")
-        let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
-        let region = MKCoordinateRegion(center: center, span: span)
-        mapView.setRegion(region, animated: false)
+        if isFirstLaunch() {
+            return
+        } else {
+            let latitude = NSUserDefaults.standardUserDefaults().doubleForKey("Latitude")
+            let longitude = NSUserDefaults.standardUserDefaults().doubleForKey("Longitude")
+            let latitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LatitudeDelta")
+            let longitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LongitudeDelta")
+            let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+            let region = MKCoordinateRegion(center: center, span: span)
+            mapView.setRegion(region, animated: false)
+        }
+    }
+    
+    func isFirstLaunch() -> Bool {
+        if let notFirstLaunch = NSUserDefaults.standardUserDefaults().valueForKey("isFirstLaunch") {
+            return notFirstLaunch as! Bool
+        } else {
+            NSUserDefaults.standardUserDefaults().setValue(false, forKey: "isFirstLaunch")
+            return true
+        }
     }
     
     func fetchPins() {
@@ -143,6 +156,4 @@ extension MapViewController: MKMapViewDelegate {
         saveMapViewRegion()
     }
 }
-
-
 
