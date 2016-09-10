@@ -218,13 +218,21 @@
                                     <outlet property="delegate" destination="9ju-T1-BM5" id="h8Z-Fv-idw"/>
                                 </connections>
                             </collectionView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This pin has no images." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IN6-QD-1vD">
+                                <rect key="frame" x="210" y="289" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="rbv-ko-sfe" secondAttribute="trailing" id="4tT-y6-Nvc"/>
+                            <constraint firstItem="IN6-QD-1vD" firstAttribute="centerX" secondItem="Shy-jy-WqL" secondAttribute="centerX" id="BNu-Nf-Id6"/>
                             <constraint firstItem="rbv-ko-sfe" firstAttribute="top" secondItem="PV3-HV-wLJ" secondAttribute="bottom" id="DP3-nk-QoX"/>
                             <constraint firstItem="iaP-rm-PmM" firstAttribute="top" secondItem="cwa-WI-ycB" secondAttribute="bottom" id="Fos-G1-B8u"/>
                             <constraint firstItem="dbH-0z-XtC" firstAttribute="top" secondItem="cwa-WI-ycB" secondAttribute="bottom" id="HhC-lT-EGw"/>
+                            <constraint firstItem="IN6-QD-1vD" firstAttribute="centerY" secondItem="Shy-jy-WqL" secondAttribute="centerY" id="MWG-lG-u0A"/>
                             <constraint firstAttribute="trailing" secondItem="cwa-WI-ycB" secondAttribute="trailing" id="Tql-FI-Dg6"/>
                             <constraint firstItem="dbH-0z-XtC" firstAttribute="top" secondItem="iaP-rm-PmM" secondAttribute="bottom" id="abO-lS-nTh"/>
                             <constraint firstItem="cwa-WI-ycB" firstAttribute="top" secondItem="rbv-ko-sfe" secondAttribute="bottom" id="ata-c3-Dc0"/>
@@ -243,6 +251,7 @@
                         <outlet property="collectionView" destination="cwa-WI-ycB" id="B2J-K6-Tps"/>
                         <outlet property="mapView" destination="rbv-ko-sfe" id="Iyl-6D-hZ3"/>
                         <outlet property="newCollectionButton" destination="PuK-oL-PRX" id="PeI-9H-a2M"/>
+                        <outlet property="noImagesLabel" destination="IN6-QD-1vD" id="OYm-hf-moL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fs8-5M-bHR" userLabel="First Responder" sceneMemberID="firstResponder"/>

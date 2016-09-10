@@ -15,6 +15,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var newCollectionButton: UIButton!
+    @IBOutlet weak var noImagesLabel: UILabel!
     var currentAnnotation: MKPointAnnotation!
     var pin: Pin!
     var selectedIndexes = [NSIndexPath]()
@@ -86,7 +87,17 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     
     func loadPhotos(pin: Pin) {
         if pin.photo.isEmpty {
-            FlickrClient.sharedInstance.loadPhotos(pin)
+            FlickrClient.sharedInstance.loadPhotos(pin) { hasPhotos, errorString in
+                guard (errorString == nil) else {
+                    self.showAlert("There was an error loading the images")
+                    return
+                }
+                if hasPhotos == false {
+                    performUIUpdatesOnMain({ 
+                        self.noImagesLabel.hidden = false
+                    })
+                }
+            }
         }
     }
 
@@ -95,6 +106,15 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
             newCollectionButton.setTitle("Remove Selected Photos", forState: .Normal)
         } else {
             newCollectionButton.setTitle("New Collection", forState: .Normal)
+        }
+    }
+    
+    func showAlert(error: String) {
+        performUIUpdatesOnMain { 
+            let alert = UIAlertController(title: error, message: "Press OK to Dismiss", preferredStyle: .Alert)
+            let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            alert.addAction(action)
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
     
@@ -121,7 +141,6 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCollectionViewCell
-        //let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         if let index = selectedIndexes.indexOf(indexPath) {
             selectedIndexes.removeAtIndex(index)
             cell.imageView.alpha = 1

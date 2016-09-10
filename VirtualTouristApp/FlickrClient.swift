@@ -11,20 +11,25 @@ import Foundation
 class FlickrClient: NSObject {
     static let sharedInstance = FlickrClient()
     
-    func loadPhotos(pin: Pin) -> Void {
+    func loadPhotos(pin: Pin, completionHandler: (hasPhotos: Bool?, errorString: String?) -> Void) {
         let methodParameters = [
             Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod, Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey, Constants.FlickrParameterKeys.BoundingBox: bboxString(pin.latitude, pinLongitude: pin.longitude), Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch, Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat, Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         taskForGetMethod(methodParameters) { (result, errorString) in
             guard (errorString == nil) else {
                 print("There was an error: \(errorString)")
+                completionHandler(hasPhotos: nil, errorString: errorString)
                 return
             }
             let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
             for photo in photos {
                 photo.pin = pin
             }
+            if photos.isEmpty {
+                completionHandler(hasPhotos: false, errorString: nil)
+            }
             pin.hasPhotos = true
+            completionHandler(hasPhotos: true, errorString: nil)
             CoreDataStack.sharedInstance().save()
         }
     }

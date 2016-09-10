@@ -155,5 +155,16 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         saveMapViewRegion()
     }
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let reuseId = "pin"
+            var pin = MKPinAnnotationView()
+            pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pin.animatesDrop = true
+            return pin
+        }
+    }
 }
 
