@@ -86,17 +86,25 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     }
     
     func loadPhotos(pin: Pin) {
+        newCollectionButton.enabled = false
         if pin.photo.isEmpty {
             FlickrClient.sharedInstance.loadPhotos(pin) { hasPhotos, errorString in
                 guard (errorString == nil) else {
                     self.showAlert("There was an error loading the images")
                     return
                 }
-                if hasPhotos == false {
-                    performUIUpdatesOnMain({ 
+                performUIUpdatesOnMain({ 
+                    if hasPhotos == false {
                         self.noImagesLabel.hidden = false
-                    })
-                }
+                    } else {
+                        self.newCollectionButton.enabled = true
+                    }
+                })
+//                if hasPhotos == false {
+//                    performUIUpdatesOnMain({ 
+//                        self.noImagesLabel.hidden = false
+//                    })
+//                }
             }
         }
     }
