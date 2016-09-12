@@ -62,10 +62,8 @@ extension FlickrClient {
         var parametersWithPage = parameters
         parametersWithPage[Constants.FlickrParameterKeys.Page] = pageNumber
         parametersWithPage[Constants.FlickrParameterKeys.PicturesPerPage] = Constants.Flickr.FlickrPicsPerPage
-        
         let session = NSURLSession.sharedSession()
         let request = NSURLRequest(URL: flickrURLFromParameters(parametersWithPage))
-        
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             func displayError(error: String) {
                 print(error)

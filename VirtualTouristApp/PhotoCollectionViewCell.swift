@@ -15,7 +15,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     func configureCell(photo: Photo) {
         if photo.photoImage != nil {
-            imageView.hidden = false
             activityIndicator.hidden = true
             imageView.image = photo.photoImage
         } else {
@@ -28,8 +27,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                     return
                 }
                 if let image = UIImage(data: imageData!) {
-                    performUIUpdatesOnMain({ 
-                        self.imageView.hidden = false
+                    performUIUpdatesOnMain({
                         self.imageView.image = image
                         self.activityIndicator.stopAnimating()
                         self.activityIndicator.hidden = true

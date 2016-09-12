@@ -96,7 +96,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
                     self.showAlert("There was an error loading the images")
                     return
                 }
-                performUIUpdatesOnMain({ 
+                performUIUpdatesOnMain({
                     if hasPhotos == false {
                         self.noImagesLabel.hidden = false
                     }
@@ -190,7 +190,7 @@ extension AlbumViewController: NSFetchedResultsControllerDelegate {
             updatedIndexPaths.append(indexPath!)
             break
         case .Move:
-            print("Move an item. We don't expect to see this in this app.")
+            print("Move an item")
             break
         }
     }
