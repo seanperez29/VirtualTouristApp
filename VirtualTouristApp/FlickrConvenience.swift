@@ -97,13 +97,4 @@ extension FlickrClient {
         }
         task.resume()
     }
-    
 }
-
-
-
-
-
-
-
-

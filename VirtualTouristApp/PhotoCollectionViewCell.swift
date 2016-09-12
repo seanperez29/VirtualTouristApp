@@ -12,18 +12,19 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    var downloadTask: NSURLSessionDataTask?
+    var dataTask: NSURLSessionDataTask?
     
     func configureCell(photo: Photo) {
         if photo.photoImage != nil {
             activityIndicator.hidden = true
             imageView.image = photo.photoImage
         } else {
-            downloadTask?.cancel()
+            dataTask?.cancel()
+            dataTask = nil
             imageView.image = UIImage(named: "Placeholder")
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
-            downloadTask = FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, errorString) in
+            dataTask = FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, errorString) in
                 guard (errorString == nil) else {
                     print("Error downloading image: \(errorString)")
                     return
