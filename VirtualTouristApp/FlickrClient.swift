@@ -56,9 +56,9 @@ class FlickrClient: NSObject {
         return components.URL!
     }
     
-    func getImage(imageUrl: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) -> Void {
-        if let url = NSURL(string: imageUrl) {
-            let request = NSURLRequest(URL: url)
+    func getImage(imageUrl: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) -> NSURLSessionDataTask {
+        let url = NSURL(string: imageUrl)
+        let request = NSURLRequest(URL: url!)
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithRequest(request) {data, response, error in
                 if let error = error {
@@ -67,8 +67,8 @@ class FlickrClient: NSObject {
                     completionHandler(imageData: data, errorString: nil)
                 }
             }
-            task.resume()
-        }
+        task.resume()
+        return task
     }
     
     struct Caches {
