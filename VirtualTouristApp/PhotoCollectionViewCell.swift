@@ -12,17 +12,17 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    var dataTask: NSURLSessionDataTask?
+    var dataTask: URLSessionDataTask?
     
-    func configureCell(photo: Photo) {
+    func configureCell(_ photo: Photo) {
         if photo.photoImage != nil {
-            activityIndicator.hidden = true
+            activityIndicator.isHidden = true
             imageView.image = photo.photoImage
         } else {
             dataTask?.cancel()
             dataTask = nil
             imageView.image = UIImage(named: "Placeholder")
-            activityIndicator.hidden = false
+            activityIndicator.isHidden = false
             activityIndicator.startAnimating()
             dataTask = FlickrClient.sharedInstance.getImage(photo.imageUrl, completionHandler: { (imageData, errorString) in
                 guard (errorString == nil) else {
@@ -33,7 +33,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                     performUIUpdatesOnMain({
                         self.imageView.image = image
                         self.activityIndicator.stopAnimating()
-                        self.activityIndicator.hidden = true
+                        self.activityIndicator.isHidden = true
                         photo.photoImage = image
                     })
                 }

@@ -9,19 +9,19 @@
 import Foundation
 
 extension FlickrClient {
-    func taskForGetMethod(parameters: [String:AnyObject], completionHandler: (result: AnyObject?, errorString: String?) -> Void) -> NSURLSessionDataTask {
-        let session = NSURLSession.sharedSession()
-        let request = NSURLRequest(URL: flickrURLFromParameters(parameters))
+    func taskForGetMethod(_ parameters: [String:AnyObject], completionHandler: @escaping (_ result: AnyObject?, _ errorString: String?) -> Void) -> URLSessionDataTask {
+        let session = URLSession.shared
+        let request = URLRequest(url: flickrURLFromParameters(parameters))
         
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            func displayError(error: String) {
+        let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
+            func displayError(_ error: String) {
                 print(error)
             }
             guard (error == nil) else {
                 displayError("There was an error with your request: \(error)")
                 return
             }
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
                 displayError("Your request returned a status code other than 2xx!")
                 return
             }
@@ -32,13 +32,13 @@ extension FlickrClient {
             
             var parsedResult: AnyObject!
             do {
-                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
             } catch {
-                completionHandler(result: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+                completionHandler(nil, "Could not parse the data as JSON: '\(data)'")
                 return
             }
             
-            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String where stat == Constants.FlickrResponseValues.OKStatus else {
+            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String , stat == Constants.FlickrResponseValues.OKStatus else {
                 displayError("Flickr API returned an error. See error code and message in \(parsedResult)")
                 return
             }
@@ -47,32 +47,32 @@ extension FlickrClient {
                 return
             }
             guard let totalPages = photosDictionary["pages"] as? Int else {
-                completionHandler(result: nil, errorString: "Cannot find key 'pages' in \(photosDictionary)")
+                completionHandler(nil, "Cannot find key 'pages' in \(photosDictionary)")
                 return
             }
             let pageLimit = min(totalPages, Constants.Flickr.MaxFlickrPages)
             let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
             self.getPhotosForPage(parameters, pageNumber: randomPage, completionHandler: completionHandler)
-        }
+        }) 
         task.resume()
         return task
     }
     
-    func getPhotosForPage(parameters: [String:AnyObject], pageNumber: Int, completionHandler: (result: AnyObject?, errorString: String?) -> Void) {
+    func getPhotosForPage(_ parameters: [String:AnyObject], pageNumber: Int, completionHandler: @escaping (_ result: AnyObject?, _ errorString: String?) -> Void) {
         var parametersWithPage = parameters
-        parametersWithPage[Constants.FlickrParameterKeys.Page] = pageNumber
-        parametersWithPage[Constants.FlickrParameterKeys.PicturesPerPage] = Constants.Flickr.FlickrPicsPerPage
-        let session = NSURLSession.sharedSession()
-        let request = NSURLRequest(URL: flickrURLFromParameters(parametersWithPage))
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            func displayError(error: String) {
+        parametersWithPage[Constants.FlickrParameterKeys.Page] = pageNumber as AnyObject?
+        parametersWithPage[Constants.FlickrParameterKeys.PicturesPerPage] = Constants.Flickr.FlickrPicsPerPage as AnyObject?
+        let session = URLSession.shared
+        let request = URLRequest(url: flickrURLFromParameters(parametersWithPage))
+        let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
+            func displayError(_ error: String) {
                 print(error)
             }
             guard (error == nil) else {
                 displayError("There was an error with your request: \(error)")
                 return
             }
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
                 displayError("Your request returned a status code other than 2xx!")
                 return
             }
@@ -83,18 +83,18 @@ extension FlickrClient {
             
             var parsedResult: AnyObject!
             do {
-                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
             } catch {
-                completionHandler(result: nil, errorString: "Could not parse the data as JSON: '\(data)'")
+                completionHandler(nil, "Could not parse the data as JSON: '\(data)'")
                 return
             }
             
-            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String where stat == Constants.FlickrResponseValues.OKStatus else {
+            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String , stat == Constants.FlickrResponseValues.OKStatus else {
                 displayError("Flickr API returned an error. See error code and message in \(parsedResult)")
                 return
             }
-            completionHandler(result: parsedResult, errorString: nil)
-        }
+            completionHandler(parsedResult, nil)
+        }) 
         task.resume()
     }
 }

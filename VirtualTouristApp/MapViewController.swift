@@ -22,7 +22,7 @@ class MapViewController: UIViewController {
         fetchPins()
         placePinsOnMap()
         loadMapViewRegion()
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .plain, target: nil, action: nil)
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.addAnnotation(_:)))
         longPressRecogniser.minimumPressDuration = 0.5
         mapView.addGestureRecognizer(longPressRecogniser)
@@ -32,29 +32,29 @@ class MapViewController: UIViewController {
         deletePinsView.center.y += deletePinsView.frame.height
     }
     
-    @IBAction func editButtonPressed(sender: UIBarButtonItem) {
+    @IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
         isEdit = !isEdit
         if isEdit {
             sender.title = "Done"
-            UIView.animateWithDuration(0.25, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.mapView.frame.origin.y -= self.deletePinsView.frame.height
                 self.deletePinsView.center.y -= self.deletePinsView.frame.height
             })
         } else {
             sender.title = "Edit"
-            UIView.animateWithDuration(0.25, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.mapView.frame.origin.y += self.deletePinsView.frame.height
                 self.deletePinsView.center.y += self.deletePinsView.frame.height
             })
         }
     }
     
-    func addAnnotation(gestureRecognizer: UIGestureRecognizer) {
-        if gestureRecognizer.state != .Began || isEdit {
+    func addAnnotation(_ gestureRecognizer: UIGestureRecognizer) {
+        if gestureRecognizer.state != .began || isEdit {
             return
         } else {
-            let touchPoint = gestureRecognizer.locationInView(mapView)
-            let newCoord: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
+            let touchPoint = gestureRecognizer.location(in: mapView)
+            let newCoord: CLLocationCoordinate2D = mapView.convert(touchPoint, toCoordinateFrom: mapView)
             let newAnnotation = MKPointAnnotation()
             newAnnotation.coordinate = newCoord
             createNewPinObject(newAnnotation)
@@ -62,27 +62,27 @@ class MapViewController: UIViewController {
         }
     }
     
-    func createNewPinObject(annotation: MKPointAnnotation) {
+    func createNewPinObject(_ annotation: MKPointAnnotation) {
         let pin = Pin(annotation: annotation, context: CoreDataStack.sharedInstance().context)
         pins.append(pin)
         CoreDataStack.sharedInstance().save()
     }
     
     func saveMapViewRegion() {
-        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.latitude, forKey: "Latitude")
-        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.center.longitude, forKey: "Longitude")
-        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.latitudeDelta, forKey: "LatitudeDelta")
-        NSUserDefaults.standardUserDefaults().setDouble(mapView.region.span.longitudeDelta, forKey: "LongitudeDelta")
+        UserDefaults.standard.set(mapView.region.center.latitude, forKey: "Latitude")
+        UserDefaults.standard.set(mapView.region.center.longitude, forKey: "Longitude")
+        UserDefaults.standard.set(mapView.region.span.latitudeDelta, forKey: "LatitudeDelta")
+        UserDefaults.standard.set(mapView.region.span.longitudeDelta, forKey: "LongitudeDelta")
     }
     
     func loadMapViewRegion() {
         if isFirstLaunch() {
             return
         } else {
-            let latitude = NSUserDefaults.standardUserDefaults().doubleForKey("Latitude")
-            let longitude = NSUserDefaults.standardUserDefaults().doubleForKey("Longitude")
-            let latitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LatitudeDelta")
-            let longitudeDelta = NSUserDefaults.standardUserDefaults().doubleForKey("LongitudeDelta")
+            let latitude = UserDefaults.standard.double(forKey: "Latitude")
+            let longitude = UserDefaults.standard.double(forKey: "Longitude")
+            let latitudeDelta = UserDefaults.standard.double(forKey: "LatitudeDelta")
+            let longitudeDelta = UserDefaults.standard.double(forKey: "LongitudeDelta")
             let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
             let region = MKCoordinateRegion(center: center, span: span)
@@ -91,20 +91,20 @@ class MapViewController: UIViewController {
     }
     
     func isFirstLaunch() -> Bool {
-        if let notFirstLaunch = NSUserDefaults.standardUserDefaults().valueForKey("isFirstLaunch") {
+        if let notFirstLaunch = UserDefaults.standard.value(forKey: "isFirstLaunch") {
             return notFirstLaunch as! Bool
         } else {
-            NSUserDefaults.standardUserDefaults().setValue(false, forKey: "isFirstLaunch")
+            UserDefaults.standard.setValue(false, forKey: "isFirstLaunch")
             return true
         }
     }
     
     func fetchPins() {
         let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: CoreDataStack.sharedInstance().context)
+        let entity = NSEntityDescription.entity(forEntityName: "Pin", in: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         do {
-            let foundObjects = try CoreDataStack.sharedInstance().context.executeFetchRequest(fetchRequest)
+            let foundObjects = try CoreDataStack.sharedInstance().context.fetch(fetchRequest)
             pins = foundObjects as! [Pin]
         } catch {
             fatalError("Could not fetch pins")
@@ -119,7 +119,7 @@ class MapViewController: UIViewController {
         }
     }
     
-    func obtainPin(annotation: MKAnnotation) -> Pin {
+    func obtainPin(_ annotation: MKAnnotation) -> Pin {
         var location: Pin!
         for pin in pins {
             if (annotation.coordinate.latitude == pin.coordinate.latitude && annotation.coordinate.longitude == pin.coordinate.longitude) {
@@ -130,9 +130,9 @@ class MapViewController: UIViewController {
         return location
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowAlbum" {
-            let albumViewController = segue.destinationViewController as! AlbumViewController
+            let albumViewController = segue.destination as! AlbumViewController
             let currentAnnotation = sender as! MKPointAnnotation
             albumViewController.currentAnnotation = currentAnnotation
             albumViewController.pin = obtainPin(currentAnnotation)
@@ -141,21 +141,21 @@ class MapViewController: UIViewController {
 }
 
 extension MapViewController: MKMapViewDelegate {
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        if let annotation = view.annotation where isEdit {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let annotation = view.annotation , isEdit {
             self.mapView.removeAnnotation(annotation)
-            CoreDataStack.sharedInstance().context.deleteObject(obtainPin(annotation))
+            CoreDataStack.sharedInstance().context.delete(obtainPin(annotation))
             CoreDataStack.sharedInstance().save()
         } else {
             let annotation = view.annotation
             mapView.deselectAnnotation(annotation, animated: false)
-            performSegueWithIdentifier("ShowAlbum", sender: annotation)
+            performSegue(withIdentifier: "ShowAlbum", sender: annotation)
         }
     }
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         saveMapViewRegion()
     }
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
             return nil
         } else {

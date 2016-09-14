@@ -13,13 +13,13 @@ import MapKit
 
 class Pin: NSManagedObject {
 
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     init(annotation: MKPointAnnotation, context: NSManagedObjectContext) {
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        let entity = NSEntityDescription.entity(forEntityName: "Pin", in: context)!
+        super.init(entity: entity, insertInto: context)
         self.hasPhotos = false
         self.latitude = annotation.coordinate.latitude
         self.longitude = annotation.coordinate.longitude
