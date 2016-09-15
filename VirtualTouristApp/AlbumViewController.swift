@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
+@available(iOS 10.0, *)
 class AlbumViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
@@ -22,16 +23,16 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     var insertedIndexPaths: [IndexPath]!
     var deletedIndexPaths: [IndexPath]!
     var updatedIndexPaths: [IndexPath]!
-    lazy var fetchedResultsController: NSFetchedResultsController = { () -> <<error type>> in
-        let fetchRequest = NSFetchRequest()
+    lazy var fetchedResultsController: NSFetchedResultsController<Photo> = {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Photo.fetchRequest()
         let entity = NSEntityDescription.entity(forEntityName: "Photo", in: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController.delegate = self
-        return fetchedResultsController
+        let _fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
+        _fetchedResultsController.delegate = self
+        return _fetchedResultsController as! NSFetchedResultsController<Photo>
     }()
 
     override func viewDidLoad() {
@@ -65,7 +66,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     func deleteSelectedItems() {
         var photosToDelete = [Photo]()
         for indexPath in selectedIndexes {
-            photosToDelete.append(fetchedResultsController.object(at: indexPath) as! Photo)
+            photosToDelete.append(fetchedResultsController.object(at: indexPath))
         }
         for photo in photosToDelete {
             CoreDataStack.sharedInstance().context.delete(photo)
@@ -75,8 +76,10 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     }
     
     func deleteAllPhotos() {
-        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-            CoreDataStack.sharedInstance().context.delete(photo)
+        if fetchedResultsController.fetchedObjects != nil {
+            for photo in fetchedResultsController.fetchedObjects! as [Photo] {
+                CoreDataStack.sharedInstance().context.delete(photo)
+            }
         }
         CoreDataStack.sharedInstance().save()
     }
@@ -129,6 +132,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     
 }
 
+@available(iOS 10.0, *)
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController.sections![section]
@@ -139,8 +143,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCollectionViewCell
-        let photo = fetchedResultsController.object(at: indexPath) as! Photo
-        //cell.imageView.alpha = 1
+        let photo = fetchedResultsController.object(at: indexPath)
         cell.configureCell(photo)
         return cell
     }
@@ -170,6 +173,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
 }
 
+@available(iOS 10.0, *)
 extension AlbumViewController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexPaths = [IndexPath]()

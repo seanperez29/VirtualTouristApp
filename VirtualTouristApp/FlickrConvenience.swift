@@ -9,7 +9,7 @@
 import Foundation
 
 extension FlickrClient {
-    func taskForGetMethod(_ parameters: [String:AnyObject], completionHandler: @escaping (_ result: AnyObject?, _ errorString: String?) -> Void) -> URLSessionDataTask {
+    func taskForGetMethod(_ parameters: [String:AnyObject], completionHandler: @escaping (_ result: AnyObject?, _ errorString: String?) -> Void) -> Void {
         let session = URLSession.shared
         let request = URLRequest(url: flickrURLFromParameters(parameters))
         
@@ -32,7 +32,7 @@ extension FlickrClient {
             
             var parsedResult: AnyObject!
             do {
-                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
             } catch {
                 completionHandler(nil, "Could not parse the data as JSON: '\(data)'")
                 return
@@ -55,7 +55,6 @@ extension FlickrClient {
             self.getPhotosForPage(parameters, pageNumber: randomPage, completionHandler: completionHandler)
         }) 
         task.resume()
-        return task
     }
     
     func getPhotosForPage(_ parameters: [String:AnyObject], pageNumber: Int, completionHandler: @escaping (_ result: AnyObject?, _ errorString: String?) -> Void) {
@@ -83,7 +82,7 @@ extension FlickrClient {
             
             var parsedResult: AnyObject!
             do {
-                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
             } catch {
                 completionHandler(nil, "Could not parse the data as JSON: '\(data)'")
                 return

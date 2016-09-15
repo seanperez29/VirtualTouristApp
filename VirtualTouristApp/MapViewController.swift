@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
+@available(iOS 10.0, *)
 class MapViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
@@ -20,8 +21,8 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchPins()
-        placePinsOnMap()
         loadMapViewRegion()
+        placePinsOnMap()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "OK", style: .plain, target: nil, action: nil)
         let longPressRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.addAnnotation(_:)))
         longPressRecogniser.minimumPressDuration = 0.5
@@ -100,7 +101,7 @@ class MapViewController: UIViewController {
     }
     
     func fetchPins() {
-        let fetchRequest = NSFetchRequest()
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Pin.fetchRequest()
         let entity = NSEntityDescription.entity(forEntityName: "Pin", in: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         do {
@@ -140,6 +141,7 @@ class MapViewController: UIViewController {
     }
 }
 
+@available(iOS 10.0, *)
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let annotation = view.annotation , isEdit {
