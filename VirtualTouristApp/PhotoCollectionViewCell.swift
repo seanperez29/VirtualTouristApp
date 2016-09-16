@@ -42,4 +42,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             })
         }
     }
+    
+    func isImageSelected(_ selected: Bool) {
+        if selected {
+           imageView.alpha = 0.5
+        } else {
+            imageView.alpha = 1
+        }
+    }
 }

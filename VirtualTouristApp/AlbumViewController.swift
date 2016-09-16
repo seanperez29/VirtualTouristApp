@@ -151,10 +151,10 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
         let cell = collectionView.cellForItem(at: indexPath) as! PhotoCollectionViewCell
         if let index = selectedIndexes.index(of: indexPath) {
             selectedIndexes.remove(at: index)
-            cell.imageView.alpha = 1
+            cell.isImageSelected(false)
         } else {
             selectedIndexes.append(indexPath)
-            cell.imageView.alpha = 0.5
+            cell.isImageSelected(true)
         }
         updateNewCollectionButton()
         
