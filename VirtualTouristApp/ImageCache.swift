@@ -26,14 +26,13 @@ class ImageCache {
     func storeImage(_ image: UIImage?, withPath path: String) {
         if image == nil {
             inMemoryCache.removeObject(forKey: path as NSString)
-            
             do {
                 try FileManager.default.removeItem(atPath: path)
             } catch _ {}
-            return
-            }
-            inMemoryCache.setObject(image!, forKey: path as NSString)
-            let data = UIImagePNGRepresentation(image!)!
-            try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
+                return
+        }
+        inMemoryCache.setObject(image!, forKey: path as NSString)
+        let data = UIImagePNGRepresentation(image!)!
+        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
     }
 }
