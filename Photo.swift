@@ -13,19 +13,19 @@ import UIKit
 
 class Photo: NSManagedObject {
 
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     init(dictionary: [String:AnyObject], context: NSManagedObjectContext) {
-        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+        let entity = NSEntityDescription.entity(forEntityName: "Photo", in: context)!
+        super.init(entity: entity, insertInto: context)
         id = dictionary["id"] as! String
         imageUrl = dictionary["url_m"] as! String
         filePath = pathForIdentifier(id)
     }
     
-    static func photosFromResult(result: AnyObject, context: NSManagedObjectContext) -> [Photo] {
+    static func photosFromResult(_ result: AnyObject, context: NSManagedObjectContext) -> [Photo] {
         var photos = [Photo]()
         if let photosResult = result["photos"] as? NSDictionary {
             if let photosArray = photosResult["photo"] as? [[String:AnyObject]] {
@@ -38,10 +38,10 @@ class Photo: NSManagedObject {
         return photos
     }
     
-    func pathForIdentifier(identifier: String) -> String {
-        let documentsDirectory: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-        let fullPath = documentsDirectory.URLByAppendingPathComponent(identifier)
-        return fullPath.path!
+    func pathForIdentifier(_ identifier: String) -> String {
+        let documentsDirectory: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fullPath = documentsDirectory.appendingPathComponent(identifier)
+        return fullPath.path
     }
     
     var photoImage: UIImage? {

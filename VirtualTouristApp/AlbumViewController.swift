@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
+@available(iOS 10.0, *)
 class AlbumViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
@@ -18,20 +19,20 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var noImagesLabel: UILabel!
     var currentAnnotation: MKPointAnnotation!
     var pin: Pin!
-    var selectedIndexes = [NSIndexPath]()
-    var insertedIndexPaths: [NSIndexPath]!
-    var deletedIndexPaths: [NSIndexPath]!
-    var updatedIndexPaths: [NSIndexPath]!
-    lazy var fetchedResultsController: NSFetchedResultsController = {
-        let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: CoreDataStack.sharedInstance().context)
+    var selectedIndexes = [IndexPath]()
+    var insertedIndexPaths: [IndexPath]!
+    var deletedIndexPaths: [IndexPath]!
+    var updatedIndexPaths: [IndexPath]!
+    lazy var fetchedResultsController: NSFetchedResultsController<Photo> = {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Photo.fetchRequest()
+        let entity = NSEntityDescription.entity(forEntityName: "Photo", in: CoreDataStack.sharedInstance().context)
         fetchRequest.entity = entity
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin)
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController.delegate = self
-        return fetchedResultsController
+        let _fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
+        _fetchedResultsController.delegate = self
+        return _fetchedResultsController as! NSFetchedResultsController<Photo>
     }()
 
     override func viewDidLoad() {
@@ -40,7 +41,7 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
         loadPhotos(pin)
         performFetch()
         if pin.hasPhotos {
-            newCollectionButton.enabled = true
+            newCollectionButton.isEnabled = true
         }
     }
     
@@ -65,31 +66,33 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     func deleteSelectedItems() {
         var photosToDelete = [Photo]()
         for indexPath in selectedIndexes {
-            photosToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
+            photosToDelete.append(fetchedResultsController.object(at: indexPath))
         }
         for photo in photosToDelete {
-            CoreDataStack.sharedInstance().context.deleteObject(photo)
+            CoreDataStack.sharedInstance().context.delete(photo)
         }
         CoreDataStack.sharedInstance().save()
-        selectedIndexes = [NSIndexPath]()
+        selectedIndexes = [IndexPath]()
     }
     
     func deleteAllPhotos() {
-        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-            CoreDataStack.sharedInstance().context.deleteObject(photo)
+        if fetchedResultsController.fetchedObjects != nil {
+            for photo in fetchedResultsController.fetchedObjects! as [Photo] {
+                CoreDataStack.sharedInstance().context.delete(photo)
+            }
         }
         CoreDataStack.sharedInstance().save()
     }
     
-    func setMapViewAnnotationAndRegion(location: CLLocationCoordinate2D) {
+    func setMapViewAnnotationAndRegion(_ location: CLLocationCoordinate2D) {
         let span = MKCoordinateSpanMake(0.07, 0.07)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: false)
         mapView.addAnnotation(currentAnnotation)
     }
     
-    func loadPhotos(pin: Pin) {
-        newCollectionButton.enabled = false
+    func loadPhotos(_ pin: Pin) {
+        newCollectionButton.isEnabled = false
         if pin.photo.isEmpty {
             FlickrClient.sharedInstance.loadPhotos(pin) { hasPhotos, errorString in
                 guard (errorString == nil) else {
@@ -98,9 +101,9 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
                 }
                 performUIUpdatesOnMain({
                     if hasPhotos == false {
-                        self.noImagesLabel.hidden = false
+                        self.noImagesLabel.isHidden = false
                     }
-                    self.newCollectionButton.enabled = true
+                    self.newCollectionButton.isEnabled = true
                 })
             }
         }
@@ -108,18 +111,18 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
 
     func updateNewCollectionButton() {
         if selectedIndexes.count > 0 {
-            newCollectionButton.setTitle("Remove Selected Photos", forState: .Normal)
+            newCollectionButton.setTitle("Remove Selected Photos", for: UIControlState())
         } else {
-            newCollectionButton.setTitle("New Collection", forState: .Normal)
+            newCollectionButton.setTitle("New Collection", for: UIControlState())
         }
     }
     
-    func showAlert(error: String) {
+    func showAlert(_ error: String) {
         performUIUpdatesOnMain { 
-            let alert = UIAlertController(title: error, message: "Press OK to Dismiss", preferredStyle: .Alert)
-            let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            let alert = UIAlertController(title: error, message: "Press OK to Dismiss", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default, handler: nil)
             alert.addAction(action)
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -129,85 +132,86 @@ class AlbumViewController: UIViewController, MKMapViewDelegate {
     
 }
 
+@available(iOS 10.0, *)
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController.sections![section]
         if (sectionInfo.numberOfObjects == 0) && pin.hasPhotos {
             loadPhotos(pin)
         }
         return sectionInfo.numberOfObjects
     }
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCollectionViewCell
-        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-        cell.imageView.alpha = 1
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCollectionViewCell
+        let photo = fetchedResultsController.object(at: indexPath)
         cell.configureCell(photo)
         return cell
     }
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCollectionViewCell
-        if let index = selectedIndexes.indexOf(indexPath) {
-            selectedIndexes.removeAtIndex(index)
-            cell.imageView.alpha = 1
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCollectionViewCell
+        if let index = selectedIndexes.index(of: indexPath) {
+            selectedIndexes.remove(at: index)
+            cell.isImageSelected(false)
         } else {
             selectedIndexes.append(indexPath)
-            cell.imageView.alpha = 0.5
+            cell.isImageSelected(true)
         }
         updateNewCollectionButton()
         
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.size.width/3, height: collectionView.bounds.size.width/3)
     }
 }
 
+@available(iOS 10.0, *)
 extension AlbumViewController: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        insertedIndexPaths = [NSIndexPath]()
-        deletedIndexPaths = [NSIndexPath]()
-        updatedIndexPaths = [NSIndexPath]()
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexPaths = [IndexPath]()
+        deletedIndexPaths = [IndexPath]()
+        updatedIndexPaths = [IndexPath]()
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
-        case .Insert:
+        case .insert:
             insertedIndexPaths.append(newIndexPath!)
             break
-        case .Delete:
+        case .delete:
             deletedIndexPaths.append(indexPath!)
             break
-        case .Update:
+        case .update:
             updatedIndexPaths.append(indexPath!)
             break
-        case .Move:
+        case .move:
             print("Move an item")
             break
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        dispatch_async(dispatch_get_main_queue()) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        DispatchQueue.main.async {
             self.collectionView.performBatchUpdates(
                 {
                     () -> Void in
                     for indexPath in self.insertedIndexPaths {
-                        self.collectionView.insertItemsAtIndexPaths([indexPath])
+                        self.collectionView.insertItems(at: [indexPath])
                     }
                     for indexPath in self.deletedIndexPaths {
-                        self.collectionView.deleteItemsAtIndexPaths([indexPath])
+                        self.collectionView.deleteItems(at: [indexPath])
                     }
                     for indexPath in self.updatedIndexPaths {
-                        self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                        self.collectionView.reloadItems(at: [indexPath])
                     }
                 }
                 ,completion: nil)

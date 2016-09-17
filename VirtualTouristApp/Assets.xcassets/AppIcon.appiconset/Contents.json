@@ -2,6 +2,7 @@
   "images" : [
     {
       "idiom" : "iphone",
+<<<<<<< HEAD
       "size" : "20x20",
       "scale" : "2x"
     },
@@ -13,11 +14,28 @@
     {
       "idiom" : "iphone",
       "size" : "29x29",
+||||||| merged common ancestors
+      "size" : "29x29",
+=======
+      "size" : "20x20",
+>>>>>>> Swift3
       "scale" : "2x"
     },
     {
       "idiom" : "iphone",
+      "size" : "20x20",
+      "scale" : "3x"
+    },
+    {
       "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "VirtualTourist_76.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "VirtualTourist_76-1.png",
       "scale" : "3x"
     },
     {
@@ -31,13 +49,15 @@
       "scale" : "3x"
     },
     {
-      "idiom" : "iphone",
       "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "VirtualTourist_120.png",
       "scale" : "2x"
     },
     {
-      "idiom" : "iphone",
       "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "VirtualTourist_180.png",
       "scale" : "3x"
     }
   ],

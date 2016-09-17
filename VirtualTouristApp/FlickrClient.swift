@@ -11,14 +11,14 @@ import Foundation
 class FlickrClient: NSObject {
     static let sharedInstance = FlickrClient()
     
-    func loadPhotos(pin: Pin, completionHandler: (hasPhotos: Bool?, errorString: String?) -> Void) {
+    func loadPhotos(_ pin: Pin, completionHandler: @escaping (_ hasPhotos: Bool?, _ errorString: String?) -> Void) {
         let methodParameters = [
             Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod, Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey, Constants.FlickrParameterKeys.BoundingBox: bboxString(pin.latitude, pinLongitude: pin.longitude), Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch, Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat, Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
-        taskForGetMethod(methodParameters) { (result, errorString) in
+        taskForGetMethod(methodParameters as [String : AnyObject]) { (result, errorString) in
             guard (errorString == nil) else {
                 print("There was an error: \(errorString)")
-                completionHandler(hasPhotos: nil, errorString: errorString)
+                completionHandler(nil, errorString)
                 return
             }
             let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
@@ -26,15 +26,15 @@ class FlickrClient: NSObject {
                 photo.pin = pin
             }
             if photos.isEmpty {
-                completionHandler(hasPhotos: false, errorString: nil)
+                completionHandler(false, nil)
             }
             pin.hasPhotos = true
-            completionHandler(hasPhotos: true, errorString: nil)
+            completionHandler(true, nil)
             CoreDataStack.sharedInstance().save()
         }
     }
     
-    func bboxString(pinLatitude: Double, pinLongitude: Double) -> String {
+    func bboxString(_ pinLatitude: Double, pinLongitude: Double) -> String {
         let minimumLon = max(Double(pinLongitude) - Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
         let minimumLat = max(Double(pinLatitude) - Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.0)
         let maximumLon = min(Double(pinLongitude) + Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
@@ -42,31 +42,31 @@ class FlickrClient: NSObject {
         return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
     }
     
-    func flickrURLFromParameters(parameters: [String:AnyObject]) -> NSURL {
-        let components = NSURLComponents()
+    func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
+        var components = URLComponents()
         components.scheme = Constants.Flickr.APIScheme
         components.host = Constants.Flickr.APIHost
         components.path = Constants.Flickr.APIPath
-        components.queryItems = [NSURLQueryItem]()
+        components.queryItems = [URLQueryItem]()
         
         for (key, value) in parameters {
-            let queryItem = NSURLQueryItem(name: key, value: "\(value)")
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
             components.queryItems!.append(queryItem)
         }
-        return components.URL!
+        return components.url!
     }
     
-    func getImage(imageUrl: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) -> NSURLSessionDataTask {
-        let url = NSURL(string: imageUrl)
-        let request = NSURLRequest(URL: url!)
-            let session = NSURLSession.sharedSession()
-            let task = session.dataTaskWithRequest(request) {data, response, error in
+    func getImage(_ imageUrl: String, completionHandler: @escaping (_ imageData: Data?, _ errorString: String?) -> Void) -> URLSessionDataTask {
+        let url = URL(string: imageUrl)
+        let request = URLRequest(url: url!)
+            let session = URLSession.shared
+            let task = session.dataTask(with: request, completionHandler: {data, response, error in
                 if let error = error {
-                    completionHandler(imageData: nil, errorString: error.localizedDescription)
+                    completionHandler(nil, error.localizedDescription)
                 } else {
-                    completionHandler(imageData: data, errorString: nil)
+                    completionHandler(data, nil)
                 }
-            }
+            }) 
         task.resume()
         return task
     }

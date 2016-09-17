@@ -11,28 +11,28 @@ import UIKit
 
 class ImageCache {
         
-    private var inMemoryCache = NSCache()
+    fileprivate var inMemoryCache = NSCache<NSString, AnyObject>()
     
-    func imageWithPath(path: String) -> UIImage? {
-        if let image = inMemoryCache.objectForKey(path) as? UIImage {
+    func imageWithPath(_ path: String) -> UIImage? {
+        if let image = inMemoryCache.object(forKey: path as NSString) as? UIImage {
             return image
         }
-        if let data = NSData(contentsOfFile: path) {
+        if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             return UIImage(data: data)
         }
         return nil
         }
         
-    func storeImage(image: UIImage?, withPath path: String) {
+    func storeImage(_ image: UIImage?, withPath path: String) {
         if image == nil {
-            inMemoryCache.removeObjectForKey(path)
+            inMemoryCache.removeObject(forKey: path as NSString)
             do {
-                try NSFileManager.defaultManager().removeItemAtPath(path)
+                try FileManager.default.removeItem(atPath: path)
             } catch _ {}
-            return
-            }
-            inMemoryCache.setObject(image!, forKey: path)
-            let data = UIImagePNGRepresentation(image!)!
-            data.writeToFile(path, atomically: true)
+                return
+        }
+        inMemoryCache.setObject(image!, forKey: path as NSString)
+        let data = UIImagePNGRepresentation(image!)!
+        try? data.write(to: URL(fileURLWithPath: path), options: [.atomic])
     }
 }
