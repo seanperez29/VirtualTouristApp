@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		911E25D21D826D0000008566 /* GCDBlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911E25D11D826D0000008566 /* GCDBlackBox.swift */; };
+		9121AB7C1D8D2136002CA05F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9121AB7B1D8D2136002CA05F /* Assets.xcassets */; };
 		9135DE041D77C5C40094DAC5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE031D77C5C40094DAC5 /* AppDelegate.swift */; };
 		9135DE061D77C5C40094DAC5 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE051D77C5C40094DAC5 /* MapViewController.swift */; };
 		9135DE091D77C5C40094DAC5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE071D77C5C40094DAC5 /* Main.storyboard */; };
-		9135DE0B1D77C5C40094DAC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */; };
 		9135DE0E1D77C5C40094DAC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9135DE0C1D77C5C40094DAC5 /* LaunchScreen.storyboard */; };
 		9135DE161D7817B40094DAC5 /* AlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9135DE151D7817B40094DAC5 /* AlbumViewController.swift */; };
 		916249ED1D827675002EF22D /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916249EC1D827675002EF22D /* CoreDataStack.swift */; };
@@ -28,11 +28,11 @@
 
 /* Begin PBXFileReference section */
 		911E25D11D826D0000008566 /* GCDBlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackBox.swift; sourceTree = "<group>"; };
+		9121AB7B1D8D2136002CA05F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../Assets.xcassets; sourceTree = "<group>"; };
 		9135DE001D77C5C40094DAC5 /* VirtualTouristApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTouristApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9135DE031D77C5C40094DAC5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9135DE051D77C5C40094DAC5 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = VirtualTouristApp/MapViewController.swift; sourceTree = "<group>"; };
 		9135DE081D77C5C40094DAC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9135DE0D1D77C5C40094DAC5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9135DE0F1D77C5C40094DAC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9135DE151D7817B40094DAC5 /* AlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlbumViewController.swift; path = VirtualTouristApp/AlbumViewController.swift; sourceTree = "<group>"; };
@@ -124,7 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				9135DE031D77C5C40094DAC5 /* AppDelegate.swift */,
-				9135DE0A1D77C5C40094DAC5 /* Assets.xcassets */,
+				9121AB7B1D8D2136002CA05F /* Assets.xcassets */,
 				9135DE0F1D77C5C40094DAC5 /* Info.plist */,
 				91F7C7BC1D7DE17D0097F73E /* Constants.swift */,
 				911E25D11D826D0000008566 /* GCDBlackBox.swift */,
@@ -194,7 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9135DE0E1D77C5C40094DAC5 /* LaunchScreen.storyboard in Resources */,
-				9135DE0B1D77C5C40094DAC5 /* Assets.xcassets in Resources */,
+				9121AB7C1D8D2136002CA05F /* Assets.xcassets in Resources */,
 				9135DE091D77C5C40094DAC5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
