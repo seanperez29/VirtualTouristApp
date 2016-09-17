@@ -21,15 +21,17 @@ class FlickrClient: NSObject {
                 completionHandler(nil, errorString)
                 return
             }
-            let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
-            for photo in photos {
-                photo.pin = pin
+            performUIUpdatesOnMain {
+                let photos = Photo.photosFromResult(result!, context: CoreDataStack.sharedInstance().context)
+                for photo in photos {
+                    photo.pin = pin
+                }
+                if photos.isEmpty {
+                    completionHandler(false, nil)
+                }
+                pin.hasPhotos = true
+                completionHandler(true, nil)
             }
-            if photos.isEmpty {
-                completionHandler(false, nil)
-            }
-            pin.hasPhotos = true
-            completionHandler(true, nil)
             CoreDataStack.sharedInstance().save()
         }
     }

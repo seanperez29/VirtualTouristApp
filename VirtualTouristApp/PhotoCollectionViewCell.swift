@@ -20,7 +20,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
             activityIndicator.isHidden = true
             imageView.alpha = 1
             let image = UIImage(data: photo.imageData!)
-            imageView.image = image
+            self.imageView.image = image
         } else {
             dataTask?.cancel()
             dataTask = nil
