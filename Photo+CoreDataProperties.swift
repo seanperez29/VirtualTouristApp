@@ -13,8 +13,8 @@ import Foundation
 import CoreData
 
 extension Photo {
-
-    @NSManaged var filePath: String
+    
+    @NSManaged var imageData: Data?
     @NSManaged var imageUrl: String
     @NSManaged var id: String
     @NSManaged var pin: Pin
