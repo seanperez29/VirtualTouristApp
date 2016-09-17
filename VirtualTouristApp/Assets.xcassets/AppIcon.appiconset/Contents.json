@@ -12,6 +12,10 @@
       "scale" : "3x"
     },
     {
+<<<<<<< HEAD
+||||||| merged common ancestors
+      "size" : "29x29",
+=======
       "idiom" : "iphone",
       "size" : "29x29",
 ||||||| merged common ancestors
@@ -28,14 +32,14 @@
     },
     {
       "size" : "29x29",
+>>>>>>> master
       "idiom" : "iphone",
-      "filename" : "VirtualTourist_76.png",
-      "scale" : "2x"
-    },
-    {
       "size" : "29x29",
+      "scale" : "2x"
+    },
+    {
       "idiom" : "iphone",
-      "filename" : "VirtualTourist_76-1.png",
+      "size" : "29x29",
       "scale" : "3x"
     },
     {
@@ -49,15 +53,13 @@
       "scale" : "3x"
     },
     {
-      "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "VirtualTourist_120.png",
+      "size" : "60x60",
       "scale" : "2x"
     },
     {
-      "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "VirtualTourist_180.png",
+      "size" : "60x60",
       "scale" : "3x"
     }
   ],

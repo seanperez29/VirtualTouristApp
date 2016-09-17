@@ -15,10 +15,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     var dataTask: URLSessionDataTask?
     
     func configureCell(_ photo: Photo) {
-        if photo.photoImage != nil {
+        if photo.imageData != nil {
+            dataTask?.cancel()
             activityIndicator.isHidden = true
             imageView.alpha = 1
-            imageView.image = photo.photoImage
+            let image = UIImage(data: photo.imageData!)
+            imageView.image = image
         } else {
             dataTask?.cancel()
             dataTask = nil
@@ -36,7 +38,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
                         self.imageView.image = image
                         self.activityIndicator.stopAnimating()
                         self.activityIndicator.isHidden = true
-                        photo.photoImage = image
+                        if let imageData = UIImagePNGRepresentation(image) {
+                            photo.imageData = imageData
+                        }
                     })
                 }
             })

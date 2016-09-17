@@ -22,7 +22,7 @@ class Photo: NSManagedObject {
         super.init(entity: entity, insertInto: context)
         id = dictionary["id"] as! String
         imageUrl = dictionary["url_m"] as! String
-        filePath = pathForIdentifier(id)
+        imageData = nil
     }
     
     static func photosFromResult(_ result: AnyObject, context: NSManagedObjectContext) -> [Photo] {
@@ -38,23 +38,5 @@ class Photo: NSManagedObject {
         return photos
     }
     
-    func pathForIdentifier(_ identifier: String) -> String {
-        let documentsDirectory: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fullPath = documentsDirectory.appendingPathComponent(identifier)
-        return fullPath.path
-    }
-    
-    var photoImage: UIImage? {
-        get {
-            return FlickrClient.Caches.imageCache.imageWithPath(filePath)
-        }
-        set {
-            FlickrClient.Caches.imageCache.storeImage(newValue, withPath: filePath)
-        }
-    }
-    
-    override func prepareForDeletion() {
-        FlickrClient.Caches.imageCache.storeImage(nil, withPath: filePath)
-    }
-
 }
+
